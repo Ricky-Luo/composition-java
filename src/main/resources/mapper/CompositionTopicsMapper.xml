@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wqlm.boot.user.dao.CompositionTopicsMapper">
+    <resultMap id="BaseResultMap" type="com.wqlm.boot.user.po.CompositionTopics">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="composition_type_id" jdbcType="INTEGER" property="compositionTypeId" />
+        <result column="composition_chinese_title" jdbcType="VARCHAR" property="compositionChineseTitle" />
+        <result column="composition_english_title" jdbcType="VARCHAR" property="compositionEnglishTitle" />
+        <result column="composition_graph_one" jdbcType="VARCHAR" property="compositionGraphOne" />
+        <result column="composition_graph_two" jdbcType="VARCHAR" property="compositionGraphTwo" />
+        <result column="composition_graph_three" jdbcType="VARCHAR" property="compositionGraphThree" />
+        <result column="composition_type_name" jdbcType="VARCHAR" property="compositionTypeName" />
+        <result column="task_detail" jdbcType="VARCHAR" property="taskDetail" />
+        <result column="composition_graph_title_one" jdbcType="VARCHAR" property="compositionGraphTitleOne" />
+        <result column="composition_graph_title_two" jdbcType="VARCHAR" property="compositionGraphTitleTwo" />
+    </resultMap>
+
+
+    <select id="getCompositionList" resultType="com.wqlm.boot.user.po.CompositionTopics" resultMap="BaseResultMap">
+        SELECT * from composition_topics
+    </select>
+    <select id="getCompositionsByUser" resultType="com.wqlm.boot.user.po.CompositionTopics" resultMap="BaseResultMap">
+        SELECT *
+        FROM composition_topics main
+        WHERE (
+            SELECT COUNT(1)
+            FROM composition_topics sub
+            WHERE main.composition_type_id = sub.composition_type_id
+                AND main.id > sub.id
+        ) &lt; 20;
+    </select>
+
+    <select id="getCompositionsByTypeId" resultType="com.wqlm.boot.user.po.CompositionTopics" resultMap="BaseResultMap">
+        SELECT *
+        FROM composition_topics a
+        WHERE a.composition_type_id= #{typeId} limit #{startPosition}, #{endPosition} 
+    </select>
+
+    <select id="getCompositionsById" resultType="com.wqlm.boot.user.po.CompositionTopics" resultMap="BaseResultMap">
+        SELECT *
+        FROM composition_topics a
+        WHERE a.id= #{Id}
+    </select>
+
+    <resultMap id="addOrUpdateCompositionContentResult" type="com.wqlm.boot.user.po.UserCompostionHistory">
+        <id column="id" jdbcType="INTEGER" property="id" />
+    </resultMap>
+
+    <insert id="addOrUpdateCompositionContent" parameterType="com.wqlm.boot.user.po.UserCompostionHistory" useGeneratedKeys="true" keyProperty="id">
+        <selectKey keyProperty="count" resultType="int" order="BEFORE">
+            select count(*) from user_compostion_history where user_id = #{userId} and composition_id = #{compositionId}
+        </selectKey>
+        <if test="count > 0" >
+            update user_compostion_history
+            <set>
+                <if test="Id != null">
+                    composition_content = #{compositionContent}
+                </if>
+            </set>
+            <where>
+                user_id = #{userId} and composition_id = #{compositionId}
+            </where>
+        </if>
+        <if test="count==0">
+            insert into user_compostion_history(user_id, composition_id, composition_content)
+            values (#{userId},#{compositionId},#{compositionContent})
+        </if>
+    </insert>
+</mapper> 

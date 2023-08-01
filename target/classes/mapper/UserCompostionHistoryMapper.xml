@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wqlm.boot.user.dao.UserCompostionHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.wqlm.boot.user.po.UserCompostionHistory">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="composition_id" jdbcType="INTEGER" property="compositionId" />
+    <result column="score" jdbcType="REAL" property="score" />
+    <result column="composition_content" jdbcType="BINARY" property="compositionContent" />
+    <result column="teacher_comment" jdbcType="BINARY" property="teacherComment" />
+  </resultMap>
+
+  <resultMap id="compositionQueryResultMap" type="com.wqlm.boot.user.po.UserCompostionHistoryDetailed">
+    <result column="composition_chinese_title" jdbcType="VARCHAR" property="compositionChineseTitle" />
+    <result column="composition_english_title" jdbcType="VARCHAR" property="compositionEnglishTitle" />
+    <result column="composition_graph_one" jdbcType="VARCHAR" property="compositionGraphOne" />
+    <result column="composition_graph_two" jdbcType="VARCHAR" property="compositionGraphTwo" />
+    <result column="compostion_graph_three" jdbcType="VARCHAR" property="compostionGraphThree" />
+    <result column="composition_type_id" jdbcType="VARCHAR" property="compositionTypeId" />
+    <result column="composition_type_name" jdbcType="VARCHAR" property="compositionTypeName" />
+    <result column="task_detail" jdbcType="VARCHAR" property="taskDetail" />
+    <result column="composition_graph_title_one" jdbcType="VARCHAR" property="compositionGraphTitleOne" />
+    <result column="composition_graph_title_two" jdbcType="VARCHAR" property="compositionGraphTitleTwo" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="composition_id" jdbcType="VARCHAR" property="compositionId" />
+    <result column="composition_content" jdbcType="VARCHAR" property="compositionContent" />
+    <result column="score" jdbcType="VARCHAR" property="score" />
+    <result column="teacher_comment" jdbcType="VARCHAR" property="teacherComment" />
+  </resultMap>
+
+  <select id="getCompositionHistoryByUserId" resultType="com.wqlm.boot.user.po.CompositionTopics" resultMap="BaseResultMap">
+        SELECT
+          *
+        FROM
+          composition_topics a
+          LEFT JOIN user_compostion_history b ON (a.id = b.composition_id)
+        WHERE
+          b.user_id = #{Id}
+    </select>
+
+</mapper>
